@@ -158,6 +158,7 @@ namespace cpe_pnu {
     //% blockId="cpe_setMotor" block="setMotor %cpeMotorCH|Direction %cpeMotor|Speed %Speed"
     //% Speed.min=0 Speed.max=100
     //% weight=100
+    //% group="Motor"
     export function setMotor(Channel: cpeMotorCH, Direction: cpeMotor, Speed: number): void {
         let motorspeed = pins.map(Speed, 0, 100, 0, 1023)
 
@@ -186,6 +187,7 @@ namespace cpe_pnu {
      */
     //% blockId="cpe_turn" block="Turn %cpeTurn|Speed %speed"
     //% speed.min=0 speed.max=100
+    //% group="Motor"
     export function Turn(Turn: cpeTurn, speed: number): void {
         let motorspeed = pins.map(speed, 0, 100, 0, 1023)
 
@@ -210,6 +212,7 @@ namespace cpe_pnu {
      */
     //% blockId="cpe_spin" block="Spin %cpeSpin|Speed %speed"
     //% speed.min=0 speed.max=100
+    //% group="Motor"
     export function Spin(Spin: cpeSpin, speed: number): void {
         let motorspeed = pins.map(speed, 0, 100, 0, 1023)
 
@@ -231,6 +234,7 @@ namespace cpe_pnu {
      * Stop both motors.
      */
     //% blockId="cpe_motorStop" block="Motor Stop"
+    //% group="Motor"
     export function MotorStop(): void {
         pins.digitalWritePin(DigitalPin.P13, 1)
         pins.analogWritePin(AnalogPin.P14, 0)
@@ -246,6 +250,7 @@ namespace cpe_pnu {
     //% blockId="cpe_Servo" block="Servo %cpeServo|Degree %Degree"
     //% Degree.min=0 Degree.max=180
     //% weight=75
+    //% group="Servo Motor"
     export function Servo(Servo: cpeServo, Degree: number): void {
         switch (Servo) {
             case cpeServo.SV1:
@@ -269,6 +274,7 @@ namespace cpe_pnu {
      */
     //% blockId="cpe_ServoStop" block="Servo Stop %cpeServo"
     //% weight=70
+    //% group="Servo Motor"
     export function ServoStop(Servo: cpeServo): void {
         switch (Servo) {
             case cpeServo.SV1:
@@ -292,6 +298,7 @@ namespace cpe_pnu {
      */
     //% blockId="cpe_readADC" block="Read %cpeReadADC"
     //% weight=60
+    //% group="Read ADC"
     export function ReadADC(ReadADC: cpeReadADC): number {
         pins.i2cWriteNumber(72, ReadADC, NumberFormat.UInt8LE, false)
         return pins.i2cReadNumber(72, NumberFormat.UInt16BE, false)
@@ -322,6 +329,7 @@ namespace cpe_pnu {
  */
     //% blockId="cpe_readAnalog" block="Read analog pin %pin"
     //% weight=50
+    //% group="Analog Pin"
     export function readAnalog(pin: cpeAnalogPin): number {
         switch (pin) {
             case cpeAnalogPin.P0: return pins.analogReadPin(AnalogPin.P0);
