@@ -2,11 +2,7 @@
     "name": "PNU_CPE",
     "description": "",
     "dependencies": {
-        "core": "*",
-        "radio": "*",
-        "microphone": "*",
-        "iBIT": "github:emwta/pxt-ibit#v4.0.10",
-        "pxt-PTKidsBIT-Robot": "github:iBuilds/pxt-PTKidsBIT-Robot#v1.6.4"
+        "core": "*"
     },
     "files": [
         "main.blocks",
