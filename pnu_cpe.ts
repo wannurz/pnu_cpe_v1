@@ -409,5 +409,131 @@ namespace cpe_pnu {
             case cpeAnalogPin.P12: pins.analogWritePin(AnalogPin.P12, value); break;
         }
     }
+    // ไลบรารี OLED Display
+    //% color=#00A2FF icon="\uf26c" block="OLED Display"
+    //% groups='["Text", "Image"]'
+    namespace oled {
+
+        let inited = false
+
+        function init(): void {
+            if (inited) return
+            inited = true
+            let list = [
+                0xAE, 0xA4, 0xD5, 0x80, 0xA8, 0x3F,
+                0xD3, 0x00, 0x40, 0x8D, 0x14,
+                0x20, 0x00, 0xA1, 0xC8,
+                0xDA, 0x12, 0x81, 0xCF,
+                0xD9, 0xF1, 0xDB, 0x40,
+                0xA6, 0xAF
+            ]
+            for (let i = 0; i < list.length; i++) {
+                sendCommand(list[i])
+            }
+            clear()
+            show()
+        }
+
+        function sendCommand(cmd: number): void {
+            pins.i2cWriteBuffer(0x3C, pins.createBufferFromArray([0x00, cmd]))
+        }
+
+        function sendData(data: Buffer): void {
+            pins.i2cWriteBuffer(0x3C, data)
+        }
+
+        let screen = pins.createBuffer(1024)
+
+        /**
+         * ล้างหน้าจอ OLED
+         */
+        //% block="ล้างหน้าจอ"
+        //% group="Text"
+        export function clear(): void {
+            screen.fill(0)
+        }
+
+        /**
+         * แสดงข้อมูลบนหน้าจอ OLED จากบัฟเฟอร์
+         */
+        //% block="แสดงหน้าจอ"
+        //% group="Text"
+        export function show(): void {
+            init()
+            for (let i = 0; i < 8; i++) {
+                sendCommand(0xB0 + i)
+                sendCommand(0x00)
+                sendCommand(0x10)
+                let start = i * 128
+                let data = pins.createBuffer(129)
+                data[0] = 0x40
+                for (let i = 0; i < 128; i++) {
+                    data[i + 1] = screen[start + i]; // คัดลอกข้อมูลจาก screen ไปยัง data
+                }
+                sendData(data)
+            }
+        }
+
+        /**
+         * แสดงข้อความบนหน้าจอ OLED ที่ตำแหน่งที่กำหนด
+         * @param text ข้อความที่จะแสดง, eg: "Hello"
+         * @param x ตำแหน่ง X (0-127), eg: 0
+         * @param y ตำแหน่ง Y (0-63), eg: 0
+         */
+        //% block="แสดงข้อความ %text ที่ X %x Y %y"
+        //% group="Text"
+        //% text.shadow="text" text.defl="Hello"
+        //% x.min=0 x.max=127 x.defl=0
+        //% y.min=0 y.max=63 y.defl=0
+        export function showText(text: string, x: number, y: number): void {
+            init()
+            for (let i = 0; i < text.length; i++) {
+                let c = text.charCodeAt(i)
+                drawChar(c, x + i * 6, y)
+            }
+            show()
+        }
+
+        function drawChar(c: number, x: number, y: number): void {
+            const font: number[][] = [
+                [0x00, 0x00, 0x00, 0x00, 0x00], // space
+                [0x00, 0x00, 0x5F, 0x00, 0x00], // !
+                // เพิ่ม font ตามต้องการ
+            ]
+            if (c < 32 || c > 127) c = 32
+            const f = font[c - 32] || [0, 0, 0, 0, 0]
+            for (let col = 0; col < 5; col++) {
+                for (let row = 0; row < 8; row++) {
+                    let pixel = (f[col] >> row) & 0x01
+                    setPixel(x + col, y + row, pixel)
+                }
+            }
+        }
+
+        function setPixel(x: number, y: number, color: number): void {
+            if (x < 0 || x >= 128 || y < 0 || y >= 64) return
+            let page = y >> 3
+            let index = page * 128 + x
+            let mask = 1 << (y % 8)
+            if (color)
+                screen[index] |= mask
+            else
+                screen[index] &= ~mask
+        }
+
+        /**
+         * วาดภาพ Bitmap ทดสอบลงบนหน้าจอ OLED
+         */
+        //% block="วาดภาพตัวอย่าง"
+        //% group="Image"
+        export function drawImage(): void {
+            init()
+            screen.fill(0)
+            for (let i = 0; i < 1024; i++) {
+                screen[i] = (i + (i >> 3)) & 1 ? 0xFF : 0x00
+            }
+            show()
+        }
+    }
 
 }
