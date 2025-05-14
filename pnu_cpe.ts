@@ -175,7 +175,7 @@ enum cpeAnalogWrite {
     //% block="P12"
     P12
 }
-namespace pnu_cpe {
+namespace cpe_pnu {
     let inited = false
 
     function init(): void {
