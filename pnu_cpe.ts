@@ -144,6 +144,41 @@ enum cpeAnalogPin {
 }
 
 /**
+ * Analog write P0 - P12
+ */
+//% blockNamespace="Analog Write"
+//% weight=60
+enum cpeAnalogWrite {
+    //% block="P0"
+    P0,
+    //% block="P1"
+    P1,
+    //% block="P2"
+    P2,
+    //% block="P3"
+    P3,
+    //% block="P4"
+    P4,
+    //% block="P5"
+    P5,
+    //% block="P6"
+    P6,
+    //% block="P7"
+    P7,
+    //% block="P8"
+    P8,
+    //% block="P9"
+    P9,
+    //% block="P10"
+    P10,
+    //% block="P11"
+    P11,
+    //% block="P12"
+    P12
+}
+
+
+/**
 * Custom motor control blocks for CPE_PNU
 */
 //% block="CPE PNU" weight=100 color=#FFA500 icon="\uf085"
@@ -309,7 +344,7 @@ namespace cpe_pnu {
     //% blockId="cpe_writeDigital" block="Digital Write pin %pin|value %value"
     //% value.min=0 value.max=1
     //% weight=55
-    //% group="Digital IO"
+    //% group="Digital In/Out"
     export function cpe_writeDigital(pin: cpeDigitalPin, value: number): void {
         pins.digitalWritePin(pin, value)
     }
@@ -319,7 +354,7 @@ namespace cpe_pnu {
      */
     //% blockId="cpe_readDigital" block="Digital Read pin %pin"
     //% weight=50
-    //% group="Digital IO"
+    //% group="Digital In/Out"
     export function cpe_readDigital(pin: cpeDigitalPin): number {
         return pins.digitalReadPin(pin)
     }
@@ -329,7 +364,7 @@ namespace cpe_pnu {
  */
     //% blockId="cpe_readAnalog" block="Read analog pin %pin"
     //% weight=50
-    //% group="Analog Pin"
+    //% group="Analog I/O"
     export function readAnalog(pin: cpeAnalogPin): number {
         switch (pin) {
             case cpeAnalogPin.P0: return pins.analogReadPin(AnalogPin.P0);
@@ -346,6 +381,32 @@ namespace cpe_pnu {
             case cpeAnalogPin.P11: return pins.analogReadPin(AnalogPin.P11);
             case cpeAnalogPin.P12: return pins.analogReadPin(AnalogPin.P12);
             default: return 0;
+        }
+    }
+    /**
+     * Write analog value (PWM) to pin P0 - P12
+     * @param pin Analog pin to write to
+     * @param value PWM value (0 - 1023)
+     */
+    //% blockId="cpe_analogWrite" block="Analog write %value|to pin %pin"
+    //% weight=49
+    //% group="Analog I/O"
+    export function analogWrite(pin: cpeAnalogPin, value: number): void {
+        value = Math.clamp(0, 1023, value);
+        switch (pin) {
+            case cpeAnalogPin.P0: pins.analogWritePin(AnalogPin.P0, value); break;
+            case cpeAnalogPin.P1: pins.analogWritePin(AnalogPin.P1, value); break;
+            case cpeAnalogPin.P2: pins.analogWritePin(AnalogPin.P2, value); break;
+            case cpeAnalogPin.P3: pins.analogWritePin(AnalogPin.P3, value); break;
+            case cpeAnalogPin.P4: pins.analogWritePin(AnalogPin.P4, value); break;
+            case cpeAnalogPin.P5: pins.analogWritePin(AnalogPin.P5, value); break;
+            case cpeAnalogPin.P6: pins.analogWritePin(AnalogPin.P6, value); break;
+            case cpeAnalogPin.P7: pins.analogWritePin(AnalogPin.P7, value); break;
+            case cpeAnalogPin.P8: pins.analogWritePin(AnalogPin.P8, value); break;
+            case cpeAnalogPin.P9: pins.analogWritePin(AnalogPin.P9, value); break;
+            case cpeAnalogPin.P10: pins.analogWritePin(AnalogPin.P10, value); break;
+            case cpeAnalogPin.P11: pins.analogWritePin(AnalogPin.P11, value); break;
+            case cpeAnalogPin.P12: pins.analogWritePin(AnalogPin.P12, value); break;
         }
     }
 
