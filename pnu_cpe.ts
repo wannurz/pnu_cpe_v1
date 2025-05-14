@@ -175,7 +175,7 @@ enum cpeAnalogWrite {
     //% block="P12"
     P12
 }
-namespace pnu_cpe {  
+namespace pnu_cpe {
     let inited = false
 
     function init(): void {
@@ -221,7 +221,10 @@ namespace pnu_cpe {
     //% block="แสดงหน้าจอ"
     //% group="Text"
     export function show(): void {
-        init()
+        if (!inited) {
+            init() // เรียก init() เพียงครั้งเดียว
+        }
+
         for (let i = 0; i < 8; i++) {
             sendCommand(0xB0 + i)  // ตั้งค่าหน้าจอเป็นหน้า i
             sendCommand(0x00)  // ตั้งค่า column start address (ต่ำ)
@@ -301,6 +304,7 @@ namespace pnu_cpe {
         show()
     }
 }
+
 
 
 /**
