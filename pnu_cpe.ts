@@ -143,7 +143,7 @@ enum cpeAnalogPin {
 }
 
 /**
- * Analog write P0 - P12
+ * Analog write P0 - P8
  */
 //% blockNamespace="Analog Write"
 //% weight=60
