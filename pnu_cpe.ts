@@ -131,15 +131,7 @@ enum cpeAnalogPin {
     //% block="P7"
     P7,
     //% block="P8"
-    P8,
-    //% block="P9"
-    P9,
-    //% block="P10"
-    P10,
-    //% block="P11"
-    P11,
-    //% block="P12"
-    P12
+    P8
 }
 
 /**
@@ -367,10 +359,6 @@ namespace cpe_pnu {
             case cpeAnalogPin.P6: return pins.analogReadPin(AnalogPin.P6);
             case cpeAnalogPin.P7: return pins.analogReadPin(AnalogPin.P7);
             case cpeAnalogPin.P8: return pins.analogReadPin(AnalogPin.P8);
-            case cpeAnalogPin.P9: return pins.analogReadPin(AnalogPin.P9);
-            case cpeAnalogPin.P10: return pins.analogReadPin(AnalogPin.P10);
-            case cpeAnalogPin.P11: return pins.analogReadPin(AnalogPin.P11);
-            case cpeAnalogPin.P12: return pins.analogReadPin(AnalogPin.P12);
             default: return 0;
         }
     }
