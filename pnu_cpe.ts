@@ -37,13 +37,13 @@ enum cpeSpin {
  * Servo channels
  */
 enum cpeServo {
-    //% block="SV1 (P13)"
+    //% block="SV1 (P9)"
     SV1,
-    //% block="SV2 (P14)"
+    //% block="SV2 (P10)"
     SV2,
-    //% block="SV3 (P15)"
+    //% block="SV3 (P11)"
     SV3,
-    //% block="SV4 (P16)"
+    //% block="SV4 (P12)"
     SV4
 }
 
@@ -165,142 +165,7 @@ enum cpeAnalogWrite {
     //% block="P7"
     P7,
     //% block="P8"
-    P8,
-    //% block="P9"
-    P9,
-    //% block="P10"
-    P10,
-    //% block="P11"
-    P11,
-    //% block="P12"
-    P12
-}
-namespace cpe_pnu {
-    let inited = false
-    let screen = pins.createBuffer(1024)
-
-    function sendCommand(cmd: number): void {
-        pins.i2cWriteBuffer(0x3C, pins.createBufferFromArray([0x00, cmd]))
-    }
-
-    function sendData(data: Buffer): void {
-        pins.i2cWriteBuffer(0x3C, data)
-    }
-
-    function init(): void {
-        if (inited) return
-        inited = true
-
-        let list = [
-            0xAE, 0xA4, 0xD5, 0x80, 0xA8, 0x3F,
-            0xD3, 0x00, 0x40, 0x8D, 0x14,
-            0x20, 0x00, 0xA1, 0xC8,
-            0xDA, 0x12, 0x81, 0xCF,
-            0xD9, 0xF1, 0xDB, 0x40,
-            0xA6, 0xAF
-        ]
-        for (let i = 0; i < list.length; i++) {
-            sendCommand(list[i])
-        }
-
-        clear()
-        show()
-    }
-
-    //% block="Clear the screen"
-    //% group="Text"
-    export function clear(): void {
-        screen.fill(0)
-    }
-
-    //% block="Show screen"
-    //% group="Text"
-    export function show(): void {
-        if (!inited) init()
-        for (let i = 0; i < 8; i++) {
-            sendCommand(0xB0 + i)
-            sendCommand(0x00)
-            sendCommand(0x10)
-
-            let start = i * 128
-            let data = pins.createBuffer(129)
-            data[0] = 0x40
-            let screenSlice = screen.slice(start, start + 128)
-            for (let j = 0; j < 128; j++) {
-                data[j + 1] = screenSlice[j]
-            }
-            sendData(data)
-        }
-    }
-
-    function setPixel(x: number, y: number, color: number): void {
-        if (x < 0 || x >= 128 || y < 0 || y >= 64) return
-        let page = y >> 3
-        let index = page * 128 + x
-        let mask = 1 << (y % 8)
-        if (color)
-            screen[index] |= mask
-        else
-            screen[index] &= ~mask
-    }
-
-    function drawChar(c: number, x: number, y: number): void {
-        const font: number[][] = [
-            [0x00, 0x00, 0x00, 0x00, 0x00], // space
-            [0x00, 0x00, 0x5F, 0x00, 0x00], // !
-            // Add more fonts here
-        ]
-        if (c < 32 || c > 127) c = 32
-        const f = font[c - 32] || [0, 0, 0, 0, 0]
-        for (let col = 0; col < 5; col++) {
-            for (let row = 0; row < 8; row++) {
-                let pixel = (f[col] >> row) & 0x01
-                setPixel(x + col, y + row, pixel)
-            }
-        }
-    }
-
-    //% block="Show text %text at X %x Y %y"
-    //% group="Text"
-    //% text.shadow="text" text.defl="Hello"
-    //% x.min=0 x.max=127 x.defl=0
-    //% y.min=0 y.max=63 y.defl=0
-    export function showText(text: string, x: number, y: number): void {
-        init()
-        for (let i = 0; i < text.length; i++) {
-            let c = text.charCodeAt(i)
-            drawChar(c, x + i * 6, y)
-        }
-        show()
-    }
-
-    const image1: number[] = [
-        0xFF, 0x81, 0x81, 0xFF,
-        0x81, 0xFF, 0xFF, 0x81
-    ]
-
-    const image2: number[] = [
-        0xAA, 0x55, 0xAA, 0x55,
-        0xAA, 0x55, 0xAA, 0x55
-    ]
-
-    //% block="Show selected image %imageChoice"
-    //% imageChoice.fieldEditor="gridpicker"
-    //% imageChoice.fieldOptions.columns=2
-    //% imageChoice.fieldOptions.tooltips="false"
-    //% group="Image"
-    export function showSelectedImage(imageChoice: number): void {
-        let image: number[] = imageChoice === 1 ? image1 : image2
-        init()
-        for (let i = 0; i < image.length; i++) {
-            let data = image[i]
-            for (let j = 0; j < 8; j++) {
-                let pixel = (data >> j) & 0x01
-                setPixel(i * 8 + j, i, pixel)
-            }
-        }
-        show()
-    }
+    P8
 }
 
 
@@ -415,16 +280,16 @@ namespace cpe_pnu {
     export function Servo(Servo: cpeServo, Degree: number): void {
         switch (Servo) {
             case cpeServo.SV1:
-                pins.servoWritePin(AnalogPin.P13, Degree)
+                pins.servoWritePin(AnalogPin.P9, Degree)
                 break
             case cpeServo.SV2:
-                pins.servoWritePin(AnalogPin.P14, Degree)
+                pins.servoWritePin(AnalogPin.P10, Degree)
                 break
             case cpeServo.SV3:
-                pins.servoWritePin(AnalogPin.P15, Degree)
+                pins.servoWritePin(AnalogPin.P11, Degree)
                 break
             case cpeServo.SV4:
-                pins.servoWritePin(AnalogPin.P16, Degree)
+                pins.servoWritePin(AnalogPin.P12, Degree)
                 break
         }
     }
@@ -439,16 +304,16 @@ namespace cpe_pnu {
     export function ServoStop(Servo: cpeServo): void {
         switch (Servo) {
             case cpeServo.SV1:
-                pins.servoSetPulse(AnalogPin.P13, 0)
+                pins.servoSetPulse(AnalogPin.P9, 0)
                 break
             case cpeServo.SV2:
-                pins.servoSetPulse(AnalogPin.P14, 0)
+                pins.servoSetPulse(AnalogPin.P10, 0)
                 break
             case cpeServo.SV3:
-                pins.servoSetPulse(AnalogPin.P15, 0)
+                pins.servoSetPulse(AnalogPin.P11, 0)
                 break
             case cpeServo.SV4:
-                pins.servoSetPulse(AnalogPin.P16, 0)
+                pins.servoSetPulse(AnalogPin.P12, 0)
                 break
         }
     }
@@ -529,10 +394,7 @@ namespace cpe_pnu {
             case cpeAnalogPin.P6: pins.analogWritePin(AnalogPin.P6, value); break;
             case cpeAnalogPin.P7: pins.analogWritePin(AnalogPin.P7, value); break;
             case cpeAnalogPin.P8: pins.analogWritePin(AnalogPin.P8, value); break;
-            case cpeAnalogPin.P9: pins.analogWritePin(AnalogPin.P9, value); break;
-            case cpeAnalogPin.P10: pins.analogWritePin(AnalogPin.P10, value); break;
-            case cpeAnalogPin.P11: pins.analogWritePin(AnalogPin.P11, value); break;
-            case cpeAnalogPin.P12: pins.analogWritePin(AnalogPin.P12, value); break;
+           
         }
     }
     
