@@ -1,5 +1,5 @@
 {
-    "name": "PNU_CPE  ",
+    "name": "PNU_CPE_2  ",
     "description": "",
     "dependencies": {
         "core": "*"
@@ -14,7 +14,7 @@
         "test.ts"
     ],
     "targetVersions": {
-        "target": "7.0.61",
+        "target": "8.0.13",
         "targetId": "microbit"
     },
     "supportedTargets": [
