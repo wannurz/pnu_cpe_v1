@@ -324,7 +324,7 @@ namespace cpe_pnu {
      */
     //% blockId="cpe_readADC" block="Read %cpeReadADC"
     //% weight=60
-    //% group="Read ADC"
+    //% group="Analog Input/Output"
     export function ReadADC(ReadADC: cpeReadADC): number {
         pins.i2cWriteNumber(72, ReadADC, NumberFormat.UInt8LE, false)
         return pins.i2cReadNumber(72, NumberFormat.UInt16BE, false)
