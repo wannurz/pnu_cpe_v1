@@ -259,7 +259,7 @@ namespace cpe_pnu {
         pins.digitalWritePin(DigitalPin.P15, 1)
         pins.analogWritePin(AnalogPin.P16, 0)
     }
- 
+
 
     /**
  * Control Servo 1–4 set degree between 0–180
@@ -382,99 +382,75 @@ namespace cpe_pnu {
             case cpeAnalogPin.P6: pins.analogWritePin(AnalogPin.P6, value); break;
             case cpeAnalogPin.P7: pins.analogWritePin(AnalogPin.P7, value); break;
             case cpeAnalogPin.P8: pins.analogWritePin(AnalogPin.P8, value); break;
-           
+
         }
     }
-    
+
 }
 
-namespace led {
-    /**
-     * Show text (A–Z, a–z, 0–9) on LED display
-     */
-    //% block="show string"
-    //% group="more"
-    export function showString(text: string): void {
-        const font: { [key: string]: number[] } = {
-            "A": [0x1F, 0x05, 0x05, 0x1F, 0x00],
-            "B": [0x1F, 0x15, 0x15, 0x0A, 0x00],
-            "C": [0x0E, 0x11, 0x11, 0x11, 0x00],
-            "D": [0x1F, 0x11, 0x11, 0x0E, 0x00],
-            "E": [0x1F, 0x15, 0x15, 0x11, 0x00],
-            "F": [0x1F, 0x05, 0x05, 0x01, 0x00],
-            "G": [0x0E, 0x11, 0x15, 0x1D, 0x00],
-            "H": [0x1F, 0x04, 0x04, 0x1F, 0x00],
-            "I": [0x11, 0x1F, 0x11, 0x00, 0x00],
-            "J": [0x08, 0x10, 0x10, 0x0F, 0x00],
-            "K": [0x1F, 0x04, 0x0A, 0x11, 0x00],
-            "L": [0x1F, 0x10, 0x10, 0x10, 0x00],
-            "M": [0x1F, 0x02, 0x04, 0x02, 0x1F],
-            "N": [0x1F, 0x02, 0x04, 0x1F, 0x00],
-            "O": [0x0E, 0x11, 0x11, 0x0E, 0x00],
-            "P": [0x1F, 0x05, 0x05, 0x02, 0x00],
-            "Q": [0x0E, 0x11, 0x19, 0x1E, 0x00],
-            "R": [0x1F, 0x05, 0x0D, 0x12, 0x00],
-            "S": [0x12, 0x15, 0x15, 0x09, 0x00],
-            "T": [0x01, 0x1F, 0x01, 0x00, 0x00],
-            "U": [0x0F, 0x10, 0x10, 0x0F, 0x00],
-            "V": [0x07, 0x08, 0x10, 0x08, 0x07],
-            "W": [0x1F, 0x08, 0x04, 0x08, 0x1F],
-            "X": [0x11, 0x0A, 0x04, 0x0A, 0x11],
-            "Y": [0x01, 0x02, 0x1C, 0x02, 0x01],
-            "Z": [0x19, 0x15, 0x13, 0x00, 0x00],
-            "a": [0x08, 0x14, 0x14, 0x1C, 0x00],
-            "b": [0x1F, 0x14, 0x14, 0x08, 0x00],
-            "c": [0x0C, 0x12, 0x12, 0x00, 0x00],
-            "d": [0x08, 0x14, 0x14, 0x1F, 0x00],
-            "e": [0x0C, 0x1A, 0x16, 0x0C, 0x00],
-            "f": [0x04, 0x1E, 0x05, 0x00, 0x00],
-            "g": [0x0C, 0x12, 0x12, 0x0F, 0x00],
-            "h": [0x1F, 0x04, 0x04, 0x18, 0x00],
-            "i": [0x00, 0x1D, 0x00, 0x00, 0x00],
-            "j": [0x10, 0x10, 0x0D, 0x00, 0x00],
-            "k": [0x1F, 0x08, 0x14, 0x00, 0x00],
-            "l": [0x11, 0x1F, 0x10, 0x00, 0x00],
-            "m": [0x1C, 0x04, 0x18, 0x04, 0x18],
-            "n": [0x1C, 0x04, 0x04, 0x18, 0x00],
-            "o": [0x0C, 0x12, 0x12, 0x0C, 0x00],
-            "p": [0x1C, 0x0A, 0x0A, 0x04, 0x00],
-            "q": [0x04, 0x0A, 0x0A, 0x1C, 0x00],
-            "r": [0x1C, 0x04, 0x04, 0x00, 0x00],
-            "s": [0x14, 0x1A, 0x0A, 0x00, 0x00],
-            "t": [0x04, 0x1F, 0x14, 0x00, 0x00],
-            "u": [0x0C, 0x10, 0x10, 0x1C, 0x00],
-            "v": [0x0C, 0x10, 0x08, 0x04, 0x00],
-            "w": [0x1C, 0x10, 0x0C, 0x10, 0x1C],
-            "x": [0x12, 0x0C, 0x0C, 0x12, 0x00],
-            "y": [0x0C, 0x10, 0x0C, 0x02, 0x1C],
-            "z": [0x1A, 0x16, 0x12, 0x00, 0x00],
-            "0": [0x0E, 0x11, 0x11, 0x0E, 0x00],
-            "1": [0x04, 0x0C, 0x04, 0x0E, 0x00],
-            "2": [0x0E, 0x09, 0x12, 0x1F, 0x00],
-            "3": [0x0E, 0x09, 0x0A, 0x0E, 0x00],
-            "4": [0x12, 0x12, 0x1F, 0x10, 0x00],
-            "5": [0x1F, 0x11, 0x0F, 0x00, 0x00],
-            "6": [0x0E, 0x11, 0x0F, 0x00, 0x00],
-            "7": [0x1F, 0x01, 0x02, 0x00, 0x00],
-            "8": [0x0E, 0x0E, 0x0E, 0x00, 0x00],
-            "9": [0x0E, 0x12, 0x0E, 0x00, 0x00]
-        };
+//% color=#0fbc11 weight=100 icon="\uf26c"
+namespace oled {
 
-        for (let char of text) {
-            if (font[char]) {
-                let bitmap = font[char];
-                for (let y = 0; y < 5; y++) {
-                    for (let x = 0; x < 5; x++) {
-                        if (((bitmap[y] >> (4 - x)) & 0x01) == 1) {
-                            led.plot(x, y);
-                        } else {
-                            led.unplot(x, y);
-                        }
-                    }
-                }
-                basic.pause(500);
-                basic.clearScreen();
-            }
+    /**
+     * แสดงข้อความแบบ static
+     */
+    //% block="show string %text x %x y %y size %size"
+    //% group="display"
+    export function showString(text: string, x: number = 0, y: number = 0, size: number = 1): void {
+        OLED12864_I2C.init(0x3C)
+        OLED12864_I2C.clear()
+        OLED12864_I2C.showString(x, y, text, size)
+    }
+
+    /**
+     * Scroll ข้อความแนวนอน
+     */
+    //% block="scroll string horizontally %text speed %speed y %y size %size"
+    //% speed.min=10 speed.max=200
+    //% group="display"
+    export function scrollHorizontal(text: string, speed: number, y: number = 0, size: number = 1): void {
+        OLED12864_I2C.init(0x3C)
+        OLED12864_I2C.clear()
+
+        let textWidth = text.length * 6 * size  // 5 pixel + 1 space per char
+        for (let offset = 0; offset <= textWidth; offset++) {
+            OLED12864_I2C.clear()
+            OLED12864_I2C.showString(-offset, y, text, size)
+            basic.pause(speed)
         }
+    }
+
+    /**
+     * Scroll ข้อความแนวตั้ง
+     */
+    //% block="scroll string vertically %text speed %speed x %x size %size"
+    //% speed.min=10 speed.max=200
+    //% group="display"
+    export function scrollVertical(text: string, speed: number, x: number = 0, size: number = 1): void {
+        OLED12864_I2C.init(0x3C)
+        OLED12864_I2C.clear()
+
+        let lineHeight = 8 * size
+        let totalHeight = text.length * lineHeight
+
+        for (let offset = 0; offset <= totalHeight; offset++) {
+            OLED12864_I2C.clear()
+            for (let i = 0; i < text.length; i++) {
+                let y = i * lineHeight - offset
+                if (y >= -lineHeight && y < 64) {
+                    OLED12864_I2C.showString(x, y, text.charAt(i), size)
+                }
+            }
+            basic.pause(speed)
+        }
+    }
+
+    /**
+     * ล้างหน้าจอ
+     */
+    //% block="clear screen"
+    //% group="display"
+    export function clear(): void {
+        OLED12864_I2C.clear()
     }
 }
