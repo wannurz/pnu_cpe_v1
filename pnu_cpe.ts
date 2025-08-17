@@ -388,7 +388,7 @@ namespace cpe_pnu {
 
 }
 namespace cpe_pnu {
-    //% block="OLED" weight=90 color=#00A1FF icon="\uf26c"
+    //% block="OLED" weight=90 color=#FFA500 icon="\uf26c"
     export namespace oled {
 
 
@@ -397,7 +397,7 @@ namespace cpe_pnu {
      * แสดงข้อความแบบ static
      */
     //% block="show string %text x %x y %y size %size"
-    //% group="more OLED"
+    //% group=" OLED"
     export function showString(text: string, x: number = 0, y: number = 0, size: number = 1): void {
         OLED12864_I2C.init(0x3C)
         OLED12864_I2C.clear()
