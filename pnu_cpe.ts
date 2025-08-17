@@ -397,7 +397,7 @@ namespace cpe_pnu {
      * แสดงข้อความแบบ static
      */
     //% block="show string %text x %x y %y size %size"
-    //% group=" OLED"
+    //% group="OLED"
     export function showString(text: string, x: number = 0, y: number = 0, size: number = 1): void {
         OLED12864_I2C.init(0x3C)
         OLED12864_I2C.clear()
@@ -409,7 +409,7 @@ namespace cpe_pnu {
      */
     //% block="scroll string horizontally %text speed %speed y %y size %size"
     //% speed.min=10 speed.max=200
-    //% group="more OLED"
+    //% group="OLED"
     export function scrollHorizontal(text: string, speed: number, y: number = 0, size: number = 1): void {
         OLED12864_I2C.init(0x3C)
         OLED12864_I2C.clear()
@@ -427,7 +427,7 @@ namespace cpe_pnu {
      */
     //% block="scroll string vertically %text speed %speed x %x size %size"
     //% speed.min=10 speed.max=200
-    //% group="more OLED"
+    //% group="OLED"
     export function scrollVertical(text: string, speed: number, x: number = 0, size: number = 1): void {
         OLED12864_I2C.init(0x3C)
         OLED12864_I2C.clear()
@@ -451,7 +451,7 @@ namespace cpe_pnu {
      * ล้างหน้าจอ
      */
     //% block="clear screen"
-    //% group="more OLED"
+    //% group="OLED"
     export function clear(): void {
         OLED12864_I2C.clear()
         }
