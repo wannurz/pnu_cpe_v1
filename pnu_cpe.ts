@@ -115,23 +115,23 @@ enum cpeDigitalPin {
  */
 enum cpeAnalogPin {
     //% block="P0"
-    P0,
+    P0 = AnalogPin.P0,
     //% block="P1"
-    P1,
+    P1 = AnalogPin.P1,
     //% block="P2"
-    P2,
+    P2 = AnalogPin.P2,
     //% block="P3"
-    P3,
+    P3 = AnalogPin.P3,
     //% block="P4"
-    P4,
+    P4 = AnalogPin.P4,
     //% block="P5"
-    P5,
+    P5 = AnalogPin.P5,
     //% block="P6"
-    P6,
+    P6 = AnalogPin.P6,
     //% block="P7"
-    P7,
+    P7 = AnalogPin.P7,
     //% block="P8"
-    P8
+    P8 = AnalogPin.P8
 }
 
 /**
@@ -296,16 +296,16 @@ namespace cpe_pnu {
     export function ServoStop(Servo: cpeServo): void {
         switch (Servo) {
             case cpeServo.SV1:
-                pins.servoSetPulse(AnalogPin.P9, 0)
+                pins.digitalWritePin(DigitalPin.P9, 0)
                 break
             case cpeServo.SV2:
-                pins.servoSetPulse(AnalogPin.P10, 0)
+                pins.digitalWritePin(DigitalPin.P10, 0)
                 break
             case cpeServo.SV3:
-                pins.servoSetPulse(AnalogPin.P11, 0)
+                pins.digitalWritePin(DigitalPin.P11, 0)
                 break
             case cpeServo.SV4:
-                pins.servoSetPulse(AnalogPin.P12, 0)
+                pins.digitalWritePin(DigitalPin.P12, 0)
                 break
         }
     }
@@ -387,9 +387,11 @@ namespace cpe_pnu {
     }
 
 }
+namespace cpe_pnu {
+    //% block="OLED" weight=90 color=#00A1FF icon="\uf26c"
+    export namespace oled {
 
-//% color=#FFA500 weight=100 icon="\uf085"
-namespace oled {
+
 
     /**
      * แสดงข้อความแบบ static
@@ -452,5 +454,7 @@ namespace oled {
     //% group="more OLED"
     export function clear(): void {
         OLED12864_I2C.clear()
-    }
-}
+        }
+    } // ปิด oled
+} // ปิด cpe_pnu
+
