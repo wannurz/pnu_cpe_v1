@@ -452,8 +452,27 @@ namespace cpe_pnu {
      */
     //% block="clear screen"
     //% group="OLED"
-    export function clear(): void {
-        OLED12864_I2C.clear()
+        export function clear(): void {
+            let addr = 0x3C  // I2C address ของ SSD1306 (ปกติ 0x3C)
+
+            // ตั้งโหมด Horizontal Addressing Mode
+            pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE, true)
+            pins.i2cWriteNumber(addr, 0x20, NumberFormat.UInt8BE, true) // Set Memory Addressing Mode
+            pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE, true) // Horizontal mode
+
+            // ตั้ง Column และ Page
+            pins.i2cWriteNumber(addr, 0x21, NumberFormat.UInt8BE, true) // Column address
+            pins.i2cWriteNumber(addr, 0, NumberFormat.UInt8BE, true)    // Start = 0
+            pins.i2cWriteNumber(addr, 127, NumberFormat.UInt8BE, true)  // End = 127
+            pins.i2cWriteNumber(addr, 0x22, NumberFormat.UInt8BE, true) // Page address
+            pins.i2cWriteNumber(addr, 0, NumberFormat.UInt8BE, true)    // Start page = 0
+            pins.i2cWriteNumber(addr, 7, NumberFormat.UInt8BE, true)    // End page = 7
+
+            // เขียนค่า 0x00 เต็มทั้งจอ (128 * 64 / 8 = 1024 byte)
+            for (let i = 0; i < 1024; i++) {
+                pins.i2cWriteNumber(addr, 0x40, NumberFormat.UInt8BE, true) // Control byte = 0x40 (data)
+                pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE, false)
+            }
         }
     } // ปิด oled
 } // ปิด cpe_pnu
