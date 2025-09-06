@@ -390,90 +390,91 @@ namespace cpe_pnu {
 namespace cpe_pnu {
     //% block="OLED" weight=90 color=#FFA500 icon="\uf26c"
     export namespace oled {
+        let addr = 0x3C
+        let initialized = false
 
-
-
-    /**
-     * แสดงข้อความแบบ static
-     */
-    //% block="show string %text x %x y %y size %size"
-    //% group="OLED"
-    export function showString(text: string, x: number = 0, y: number = 0, size: number = 1): void {
-        OLED12864_I2C.init(0x3C)
-        OLED12864_I2C.clear()
-        OLED12864_I2C.showString(x, y, text, size)
-    }
-
-    /**
-     * Scroll ข้อความแนวนอน
-     */
-    //% block="scroll string horizontally %text speed %speed y %y size %size"
-    //% speed.min=10 speed.max=200
-    //% group="OLED"
-    export function scrollHorizontal(text: string, speed: number, y: number = 0, size: number = 1): void {
-        OLED12864_I2C.init(0x3C)
-        OLED12864_I2C.clear()
-
-        let textWidth = text.length * 6 * size  // 5 pixel + 1 space per char
-        for (let offset = 0; offset <= textWidth; offset++) {
-            OLED12864_I2C.clear()
-            OLED12864_I2C.showString(-offset, y, text, size)
-            basic.pause(speed)
+        /**
+         * เริ่มต้นการทำงานของ OLED
+         */
+        //% block="initialize OLED"
+        //% group="OLED"
+        export function init(): void {
+            if (initialized) return
+            OLED12864_I2C.init(addr)
+            clear()
+            initialized = true
         }
-    }
 
-    /**
-     * Scroll ข้อความแนวตั้ง
-     */
-    //% block="scroll string vertically %text speed %speed x %x size %size"
-    //% speed.min=10 speed.max=200
-    //% group="OLED"
-    export function scrollVertical(text: string, speed: number, x: number = 0, size: number = 1): void {
-        OLED12864_I2C.init(0x3C)
-        OLED12864_I2C.clear()
+        /**
+         * แสดงข้อความแบบ static
+         */
+        //% block="show string %text x %x y %y size %size"
+        //% group="OLED"
+        export function showString(text: string, x: number = 0, y: number = 0, size: number = 1): void {
+            if (!initialized) init()
+            OLED12864_I2C.showString(x, y, text, size)
+        }
 
-        let lineHeight = 8 * size
-        let totalHeight = text.length * lineHeight
-
-        for (let offset = 0; offset <= totalHeight; offset++) {
-            OLED12864_I2C.clear()
-            for (let i = 0; i < text.length; i++) {
-                let y = i * lineHeight - offset
-                if (y >= -lineHeight && y < 64) {
-                    OLED12864_I2C.showString(x, y, text.charAt(i), size)
-                }
+        /**
+         * Scroll ข้อความแนวนอน
+         */
+        //% block="scroll string horizontally %text speed %speed y %y size %size"
+        //% speed.min=10 speed.max=200
+        //% group="OLED"
+        export function scrollHorizontal(text: string, speed: number, y: number = 0, size: number = 1): void {
+            if (!initialized) init()
+            let textWidth = text.length * 6 * size
+            for (let offset = 0; offset <= textWidth; offset++) {
+                clear()
+                OLED12864_I2C.showString(-offset, y, text, size)
+                basic.pause(speed)
             }
-            basic.pause(speed)
         }
-    }
 
-    /**
-     * ล้างหน้าจอ
-     */
-    //% block="clear screen"
-    //% group="OLED"
+        /**
+         * Scroll ข้อความแนวตั้ง
+         */
+        //% block="scroll string vertically %text speed %speed x %x size %size"
+        //% speed.min=10 speed.max=200
+        //% group="OLED"
+        export function scrollVertical(text: string, speed: number, x: number = 0, size: number = 1): void {
+            if (!initialized) init()
+            let lineHeight = 8 * size
+            let totalHeight = text.length * lineHeight
+            for (let offset = 0; offset <= totalHeight; offset++) {
+                clear()
+                for (let i = 0; i < text.length; i++) {
+                    let y = i * lineHeight - offset
+                    if (y >= -lineHeight && y < 64) {
+                        OLED12864_I2C.showString(x, y, text.charAt(i), size)
+                    }
+                }
+                basic.pause(speed)
+            }
+        }
+
+        /**
+         * ล้างหน้าจอ
+         */
+        //% block="clear screen"
+        //% group="OLED"
         export function clear(): void {
-            let addr = 0x3C  // I2C address ของ SSD1306 (ปกติ 0x3C)
-
-            // ตั้งโหมด Horizontal Addressing Mode
             pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE, true)
             pins.i2cWriteNumber(addr, 0x20, NumberFormat.UInt8BE, true) // Set Memory Addressing Mode
             pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE, true) // Horizontal mode
-
-            // ตั้ง Column และ Page
             pins.i2cWriteNumber(addr, 0x21, NumberFormat.UInt8BE, true) // Column address
             pins.i2cWriteNumber(addr, 0, NumberFormat.UInt8BE, true)    // Start = 0
             pins.i2cWriteNumber(addr, 127, NumberFormat.UInt8BE, true)  // End = 127
             pins.i2cWriteNumber(addr, 0x22, NumberFormat.UInt8BE, true) // Page address
             pins.i2cWriteNumber(addr, 0, NumberFormat.UInt8BE, true)    // Start page = 0
             pins.i2cWriteNumber(addr, 7, NumberFormat.UInt8BE, true)    // End page = 7
-
-            // เขียนค่า 0x00 เต็มทั้งจอ (128 * 64 / 8 = 1024 byte)
             for (let i = 0; i < 1024; i++) {
-                pins.i2cWriteNumber(addr, 0x40, NumberFormat.UInt8BE, true) // Control byte = 0x40 (data)
+                pins.i2cWriteNumber(addr, 0x40, NumberFormat.UInt8BE, true)
                 pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE, false)
             }
         }
-    } // ปิด oled
-} // ปิด cpe_pnu
+    }
+}// ปิด cpe_pnu
+
+
 
