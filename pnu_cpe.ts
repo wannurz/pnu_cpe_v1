@@ -168,83 +168,70 @@ enum cpeAnalogWrite {
 namespace cpe_pnu {
 
     /**
-     * Control individual motor channel and direction.
+     * Control motor with analog style (-1023 to 1023)
+     * M1 = P13, P14
+     * M2 = P15, P16
      * @param Channel Motor channel
-     * @param Direction Motor direction
-     * @param Speed Speed (0 to 100), eg: 50
+     * @param Speed Speed (-1023 to 1023), eg: 800
      */
-    //% blockId="cpe_setMotor" block="setMotor %cpeMotorCH|Direction %cpeMotor|Speed %Speed"
-    //% Speed.min=0 Speed.max=100
+    //% blockId="cpe_setMotor" block="setMotor %Channel|Speed %Speed"
+    //% Speed.min=-1023 Speed.max=1023
     //% weight=100
     //% group="Motor"
-    export function setMotor(Channel: cpeMotorCH, Direction: cpeMotor, Speed: number): void {
-        let motorspeed = pins.map(Speed, 0, 100, 0, 1023)
-
-        if (Channel == cpeMotorCH.M1 && Direction == cpeMotor.Forward) {
-            pins.digitalWritePin(DigitalPin.P13, 1)
-            pins.analogWritePin(AnalogPin.P14, motorspeed)
+    export function setMotor(Channel: cpeMotorCH, Speed: number): void {
+        if (Channel == cpeMotorCH.M1) {
+            if (Speed >= 0) {
+                pins.analogWritePin(AnalogPin.P14, Speed)
+                pins.analogWritePin(AnalogPin.P13, 0)
+            } else {
+                pins.analogWritePin(AnalogPin.P14, 0)
+                pins.analogWritePin(AnalogPin.P13, -Speed)
+            }
         }
-        else if (Channel == cpeMotorCH.M2 && Direction == cpeMotor.Forward) {
-            pins.digitalWritePin(DigitalPin.P15, 0)
-            pins.analogWritePin(AnalogPin.P16, motorspeed)
-        }
-        else if (Channel == cpeMotorCH.M1 && Direction == cpeMotor.Backward) {
-            pins.digitalWritePin(DigitalPin.P13, 0)
-            pins.analogWritePin(AnalogPin.P14, motorspeed)
-        }
-        else if (Channel == cpeMotorCH.M2 && Direction == cpeMotor.Backward) {
-            pins.digitalWritePin(DigitalPin.P15, 1)
-            pins.analogWritePin(AnalogPin.P16, motorspeed)
+        else if (Channel == cpeMotorCH.M2) {
+            if (Speed >= 0) {
+                pins.analogWritePin(AnalogPin.P16, Speed)
+                pins.analogWritePin(AnalogPin.P15, 0)
+            } else {
+                pins.analogWritePin(AnalogPin.P16, 0)
+                pins.analogWritePin(AnalogPin.P15, -Speed)
+            }
         }
     }
 
     /**
      * Turn the robot by running one motor.
      * @param Turn Direction to turn, eg: cpeTurn.Left
-     * @param speed Speed (0 to 100), eg: 50
+     * @param speed Speed (0 to 1023), eg: 512
      */
-    //% blockId="cpe_turn" block="Turn %cpeTurn|Speed %speed"
-    //% speed.min=0 speed.max=100
+    //% blockId="cpe_turn" block="Turn %Turn|Speed %speed"
+    //% speed.min=0 speed.max=1023
     //% group="Motor"
     export function Turn(Turn: cpeTurn, speed: number): void {
-        let motorspeed = pins.map(speed, 0, 100, 0, 1023)
-
         if (Turn == cpeTurn.Left) {
-            pins.digitalWritePin(DigitalPin.P13, 1)
-            pins.analogWritePin(AnalogPin.P14, 0)
-            pins.digitalWritePin(DigitalPin.P15, 0)
-            pins.analogWritePin(AnalogPin.P16, motorspeed)
-        }
-        else if (Turn == cpeTurn.Right) {
-            pins.digitalWritePin(DigitalPin.P13, 1)
-            pins.analogWritePin(AnalogPin.P14, motorspeed)
-            pins.digitalWritePin(DigitalPin.P15, 0)
-            pins.analogWritePin(AnalogPin.P16, 0)
+            setMotor(cpeMotorCH.M1, 0)     // M1 หยุด
+            setMotor(cpeMotorCH.M2, speed) // M2 หมุนไปข้างหน้า
+        } else if (Turn == cpeTurn.Right) {
+            setMotor(cpeMotorCH.M1, speed) // M1 หมุนไปข้างหน้า
+            setMotor(cpeMotorCH.M2, 0)     // M2 หยุด
         }
     }
 
     /**
      * Spin the robot in place (left or right).
      * @param Spin Direction to spin, eg: cpeSpin.Left
-     * @param speed Speed (0 to 100), eg: 50
+     * @param speed Speed (0 to 1023), eg: 512
      */
-    //% blockId="cpe_spin" block="Spin %cpeSpin|Speed %speed"
-    //% speed.min=0 speed.max=100
+    //% blockId="cpe_spin" block="Spin %Spin|Speed %speed"
+    //% speed.min=0 speed.max=1023
     //% group="Motor"
     export function Spin(Spin: cpeSpin, speed: number): void {
-        let motorspeed = pins.map(speed, 0, 100, 0, 1023)
-
         if (Spin == cpeSpin.Left) {
-            pins.digitalWritePin(DigitalPin.P13, 0)
-            pins.analogWritePin(AnalogPin.P14, motorspeed)
-            pins.digitalWritePin(DigitalPin.P15, 0)
-            pins.analogWritePin(AnalogPin.P16, motorspeed)
-        }
-        else if (Spin == cpeSpin.Right) {
-            pins.digitalWritePin(DigitalPin.P13, 1)
-            pins.analogWritePin(AnalogPin.P14, motorspeed)
-            pins.digitalWritePin(DigitalPin.P15, 1)
-            pins.analogWritePin(AnalogPin.P16, motorspeed)
+            setMotor(cpeMotorCH.M1, -speed) // M1 หมุนถอยหลัง
+            setMotor(cpeMotorCH.M2, speed)  // M2 หมุนไปข้างหน้า
+        } else if (Spin == cpeSpin.Right) {
+            setMotor(cpeMotorCH.M1, speed)  // M1 หมุนไปข้างหน้า
+            setMotor(cpeMotorCH.M2, -speed) // M2 หมุนถอยหลัง
         }
     }
 
@@ -254,11 +241,10 @@ namespace cpe_pnu {
     //% blockId="cpe_motorStop" block="Motor Stop"
     //% group="Motor"
     export function MotorStop(): void {
-        pins.digitalWritePin(DigitalPin.P13, 1)
-        pins.analogWritePin(AnalogPin.P14, 0)
-        pins.digitalWritePin(DigitalPin.P15, 1)
-        pins.analogWritePin(AnalogPin.P16, 0)
+        setMotor(cpeMotorCH.M1, 0)
+        setMotor(cpeMotorCH.M2, 0)
     }
+
 
 
     /**
