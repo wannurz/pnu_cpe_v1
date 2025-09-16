@@ -6,7 +6,7 @@
 /**
  * Motor directions
  */
-enum cpeMotor {
+enum lnwMotor {
     //% block="Forward"
     Forward,
     //% block="Backward"
@@ -16,7 +16,7 @@ enum cpeMotor {
 /**
  * Turn directions
  */
-enum cpeTurn {
+enum lnwTurn {
     //% block="Left"
     Left,
     //% block="Right"
@@ -26,7 +26,7 @@ enum cpeTurn {
 /**
  * Spin directions
  */
-enum cpeSpin {
+enum lnwSpin {
     //% block="Left"
     Left,
     //% block="Right"
@@ -36,7 +36,7 @@ enum cpeSpin {
 /**
  * Servo channels
  */
-enum cpeServo {
+enum lnwServo {
     //% block="SV1 (P9)"
     SV1,
     //% block="SV2 (P10)"
@@ -51,7 +51,7 @@ enum cpeServo {
 /**
  * ADC channels
  */
-enum cpeReadADC {
+enum lnwReadADC {
     //% block="ADC0"
     ADC0 = 0,
     //% block="ADC1"
@@ -73,7 +73,7 @@ enum cpeReadADC {
 /**
  * Motor channel
  */
-enum cpeMotorCH {
+enum lnwMotorCH {
     //% block="M1"
     M1,
     //% block="M2"
@@ -82,7 +82,7 @@ enum cpeMotorCH {
 /**
  * Digital pins for P0-P12
  */
-enum cpeDigitalPin {
+enum lnwDigitalPin {
     //% block="P0"
     P0 = DigitalPin.P0,
     //% block="P1"
@@ -113,7 +113,7 @@ enum cpeDigitalPin {
 /**
  * Analog pins P0 - P12
  */
-enum cpeAnalogPin {
+enum lnwAnalogPin {
     //% block="P0"
     P0 = AnalogPin.P0,
     //% block="P1"
@@ -139,7 +139,7 @@ enum cpeAnalogPin {
  */
 //% blockNamespace="Analog Write"
 //% weight=60
-enum cpeAnalogWrite {
+enum lnwAnalogWrite {
     //% block="P0"
     P0,
     //% block="P1"
@@ -162,10 +162,10 @@ enum cpeAnalogWrite {
 
 
 /**
-* Custom motor control blocks for CPE_PNU
+* Custom motor control blocks for lnw
 */
-//% block="CPE PNU" weight=100 color=#FFA500 icon="\uf085"
-namespace cpe_pnu {
+//% block="lnw" weight=100 color=#FFA500 icon="\uf085"
+namespace lnw {
 
     /**
      * Control motor with analog style (-1023 to 1023)
@@ -174,12 +174,12 @@ namespace cpe_pnu {
      * @param Channel Motor channel
      * @param Speed Speed (-1023 to 1023), eg: 800
      */
-    //% blockId="cpe_setMotor" block="setMotor %Channel|Speed %Speed"
+    //% blockId="lnw_setMotor" block="setMotor %Channel|Speed %Speed"
     //% Speed.min=-1023 Speed.max=1023
     //% weight=100
     //% group="Motor"
-    export function setMotor(Channel: cpeMotorCH, Speed: number): void {
-        if (Channel == cpeMotorCH.M1) {
+    export function setMotor(Channel: lnwMotorCH, Speed: number): void {
+        if (Channel == lnwMotorCH.M1) {
             if (Speed >= 0) {
                 pins.analogWritePin(AnalogPin.P14, Speed)
                 pins.analogWritePin(AnalogPin.P13, 0)
@@ -188,7 +188,7 @@ namespace cpe_pnu {
                 pins.analogWritePin(AnalogPin.P13, -Speed)
             }
         }
-        else if (Channel == cpeMotorCH.M2) {
+        else if (Channel == lnwMotorCH.M2) {
             if (Speed >= 0) {
                 pins.analogWritePin(AnalogPin.P16, Speed)
                 pins.analogWritePin(AnalogPin.P15, 0)
@@ -204,45 +204,45 @@ namespace cpe_pnu {
      * @param Turn Direction to turn, eg: cpeTurn.Left
      * @param speed Speed (0 to 1023), eg: 512
      */
-    //% blockId="cpe_turn" block="Turn %Turn|Speed %speed"
+    //% blockId="lnw_turn" block="Turn %Turn|Speed %speed"
     //% speed.min=0 speed.max=1023
     //% group="Motor"
-    export function Turn(Turn: cpeTurn, speed: number): void {
-        if (Turn == cpeTurn.Left) {
-            setMotor(cpeMotorCH.M1, 0)     // M1 หยุด
-            setMotor(cpeMotorCH.M2, speed) // M2 หมุนไปข้างหน้า
-        } else if (Turn == cpeTurn.Right) {
-            setMotor(cpeMotorCH.M1, speed) // M1 หมุนไปข้างหน้า
-            setMotor(cpeMotorCH.M2, 0)     // M2 หยุด
+    export function Turn(Turn: lnwTurn, speed: number): void {
+        if (Turn == lnwTurn.Left) {
+            setMotor(lnwMotorCH.M1, 0)     // M1 หยุด
+            setMotor(lnwMotorCH.M2, speed) // M2 หมุนไปข้างหน้า
+        } else if (Turn == lnwTurn.Right) {
+            setMotor(lnwMotorCH.M1, speed) // M1 หมุนไปข้างหน้า
+            setMotor(lnwMotorCH.M2, 0)     // M2 หยุด
         }
     }
 
     /**
      * Spin the robot in place (left or right).
-     * @param Spin Direction to spin, eg: cpeSpin.Left
+     * @param Spin Direction to spin, eg: lnwSpin.Left
      * @param speed Speed (0 to 1023), eg: 512
      */
-    //% blockId="cpe_spin" block="Spin %Spin|Speed %speed"
+    //% blockId="lnw_spin" block="Spin %Spin|Speed %speed"
     //% speed.min=0 speed.max=1023
     //% group="Motor"
-    export function Spin(Spin: cpeSpin, speed: number): void {
-        if (Spin == cpeSpin.Left) {
-            setMotor(cpeMotorCH.M1, -speed) // M1 หมุนถอยหลัง
-            setMotor(cpeMotorCH.M2, speed)  // M2 หมุนไปข้างหน้า
-        } else if (Spin == cpeSpin.Right) {
-            setMotor(cpeMotorCH.M1, speed)  // M1 หมุนไปข้างหน้า
-            setMotor(cpeMotorCH.M2, -speed) // M2 หมุนถอยหลัง
+    export function Spin(Spin: lnwSpin, speed: number): void {
+        if (Spin == lnwSpin.Left) {
+            setMotor(lnwMotorCH.M1, -speed) // M1 หมุนถอยหลัง
+            setMotor(lnwMotorCH.M2, speed)  // M2 หมุนไปข้างหน้า
+        } else if (Spin == lnwSpin.Right) {
+            setMotor(lnwMotorCH.M1, speed)  // M1 หมุนไปข้างหน้า
+            setMotor(lnwMotorCH.M2, -speed) // M2 หมุนถอยหลัง
         }
     }
 
     /**
      * Stop both motors.
      */
-    //% blockId="cpe_motorStop" block="Motor Stop"
+    //% blockId="lnw_motorStop" block="Motor Stop"
     //% group="Motor"
     export function MotorStop(): void {
-        setMotor(cpeMotorCH.M1, 0)
-        setMotor(cpeMotorCH.M2, 0)
+        setMotor(lnwMotorCH.M1, 0)
+        setMotor(lnwMotorCH.M2, 0)
     }
 
 
@@ -251,22 +251,22 @@ namespace cpe_pnu {
  * Control Servo 1–4 set degree between 0–180
  * @param Degree servo degree 0–180, eg: 90
  */
-    //% blockId="cpe_Servo" block="Servo %cpeServo|Degree %Degree"
+    //% blockId="lnw_Servo" block="Servo %lnwServo|Degree %Degree"
     //% Degree.min=0 Degree.max=180
     //% weight=75
     //% group="Servo Motor"
-    export function Servo(Servo: cpeServo, Degree: number): void {
+    export function Servo(Servo: lnwServo, Degree: number): void {
         switch (Servo) {
-            case cpeServo.SV1:
+            case lnwServo.SV1:
                 pins.servoWritePin(AnalogPin.P9, Degree)
                 break
-            case cpeServo.SV2:
+            case lnwServo.SV2:
                 pins.servoWritePin(AnalogPin.P10, Degree)
                 break
-            case cpeServo.SV3:
+            case lnwServo.SV3:
                 pins.servoWritePin(AnalogPin.P11, Degree)
                 break
-            case cpeServo.SV4:
+            case lnwServo.SV4:
                 pins.servoWritePin(AnalogPin.P12, Degree)
                 break
         }
@@ -276,21 +276,21 @@ namespace cpe_pnu {
      * Set Servo to free rotation
      * @param Servo Servo to stop
      */
-    //% blockId="cpe_ServoStop" block="Servo Stop %cpeServo"
+    //% blockId="lnw_ServoStop" block="Servo Stop %lnwServo"
     //% weight=70
     //% group="Servo Motor"
-    export function ServoStop(Servo: cpeServo): void {
+    export function ServoStop(Servo: lnwServo): void {
         switch (Servo) {
-            case cpeServo.SV1:
+            case lnwServo.SV1:
                 pins.digitalWritePin(DigitalPin.P9, 0)
                 break
-            case cpeServo.SV2:
+            case lnwServo.SV2:
                 pins.digitalWritePin(DigitalPin.P10, 0)
                 break
-            case cpeServo.SV3:
+            case lnwServo.SV3:
                 pins.digitalWritePin(DigitalPin.P11, 0)
                 break
-            case cpeServo.SV4:
+            case lnwServo.SV4:
                 pins.digitalWritePin(DigitalPin.P12, 0)
                 break
         }
@@ -300,51 +300,51 @@ namespace cpe_pnu {
      * Read ADC channel 0-7
      * @param ReadADC ADC channel to read
      */
-    //% blockId="cpe_readADC" block="Read %cpeReadADC"
+    //% blockId="lnw_readADC" block="Read %lnwReadADC"
     //% weight=60
     //% group="Analog Input/Output"
-    export function ReadADC(ReadADC: cpeReadADC): number {
+    export function ReadADC(ReadADC: lnwReadADC): number {
         pins.i2cWriteNumber(72, ReadADC, NumberFormat.UInt8LE, false)
         return pins.i2cReadNumber(72, NumberFormat.UInt16BE, false)
     }
     /**
      * Write digital value to pin
      */
-    //% blockId="cpe_writeDigital" block="Digital Write pin %pin|value %value"
+    //% blockId="lnw_writeDigital" block="Digital Write pin %pin|value %value"
     //% value.min=0 value.max=1
     //% weight=55
     //% group="Digital Input/Output"
-    export function cpe_writeDigital(pin: cpeDigitalPin, value: number): void {
+    export function lnw_writeDigital(pin: lnwDigitalPin, value: number): void {
         pins.digitalWritePin(pin, value)
     }
 
     /**
      * Read digital value from pin
      */
-    //% blockId="cpe_readDigital" block="Digital Read pin %pin"
+    //% blockId="lnw_readDigital" block="Digital Read pin %pin"
     //% weight=50
     //% group="Digital Input/Output"
-    export function cpe_readDigital(pin: cpeDigitalPin): number {
+    export function lnw_readDigital(pin: lnwDigitalPin): number {
         return pins.digitalReadPin(pin)
     }
     /**
  * Read analog value from pin P0 - P12
  * @param pin Analog pin to read
  */
-    //% blockId="cpe_readAnalog" block="Read analog pin %pin"
+    //% blockId="lnw_readAnalog" block="Read analog pin %pin"
     //% weight=50
     //% group="Analog Input/Output"
-    export function readAnalog(pin: cpeAnalogPin): number {
+    export function readAnalog(pin: lnwAnalogPin): number {
         switch (pin) {
-            case cpeAnalogPin.P0: return pins.analogReadPin(AnalogPin.P0);
-            case cpeAnalogPin.P1: return pins.analogReadPin(AnalogPin.P1);
-            case cpeAnalogPin.P2: return pins.analogReadPin(AnalogPin.P2);
-            case cpeAnalogPin.P3: return pins.analogReadPin(AnalogPin.P3);
-            case cpeAnalogPin.P4: return pins.analogReadPin(AnalogPin.P4);
-            case cpeAnalogPin.P5: return pins.analogReadPin(AnalogPin.P5);
-            case cpeAnalogPin.P6: return pins.analogReadPin(AnalogPin.P6);
-            case cpeAnalogPin.P7: return pins.analogReadPin(AnalogPin.P7);
-            case cpeAnalogPin.P8: return pins.analogReadPin(AnalogPin.P8);
+            case lnwAnalogPin.P0: return pins.analogReadPin(AnalogPin.P0);
+            case lnwAnalogPin.P1: return pins.analogReadPin(AnalogPin.P1);
+            case lnwAnalogPin.P2: return pins.analogReadPin(AnalogPin.P2);
+            case lnwAnalogPin.P3: return pins.analogReadPin(AnalogPin.P3);
+            case lnwAnalogPin.P4: return pins.analogReadPin(AnalogPin.P4);
+            case lnwAnalogPin.P5: return pins.analogReadPin(AnalogPin.P5);
+            case lnwAnalogPin.P6: return pins.analogReadPin(AnalogPin.P6);
+            case lnwAnalogPin.P7: return pins.analogReadPin(AnalogPin.P7);
+            case lnwAnalogPin.P8: return pins.analogReadPin(AnalogPin.P8);
             default: return 0;
         }
     }
@@ -353,35 +353,32 @@ namespace cpe_pnu {
      * @param pin Analog pin to write to
      * @param value PWM value (0 - 1023)
      */
-    //% blockId="cpe_analogWrite" block="Analog write %value|to pin %pin"
+    //% blockId="lnw_analogWrite" block="Analog write %value|to pin %pin"
     //% weight=49
     //% group="Analog Input/Output"
-    export function analogWrite(pin: cpeAnalogPin, value: number): void {
+    export function analogWrite(pin: lnwAnalogPin, value: number): void {
         value = Math.clamp(0, 1023, value);
         switch (pin) {
-            case cpeAnalogPin.P0: pins.analogWritePin(AnalogPin.P0, value); break;
-            case cpeAnalogPin.P1: pins.analogWritePin(AnalogPin.P1, value); break;
-            case cpeAnalogPin.P2: pins.analogWritePin(AnalogPin.P2, value); break;
-            case cpeAnalogPin.P3: pins.analogWritePin(AnalogPin.P3, value); break;
-            case cpeAnalogPin.P4: pins.analogWritePin(AnalogPin.P4, value); break;
-            case cpeAnalogPin.P5: pins.analogWritePin(AnalogPin.P5, value); break;
-            case cpeAnalogPin.P6: pins.analogWritePin(AnalogPin.P6, value); break;
-            case cpeAnalogPin.P7: pins.analogWritePin(AnalogPin.P7, value); break;
-            case cpeAnalogPin.P8: pins.analogWritePin(AnalogPin.P8, value); break;
+            case lnwAnalogPin.P0: pins.analogWritePin(AnalogPin.P0, value); break;
+            case lnwAnalogPin.P1: pins.analogWritePin(AnalogPin.P1, value); break;
+            case lnwAnalogPin.P2: pins.analogWritePin(AnalogPin.P2, value); break;
+            case lnwAnalogPin.P3: pins.analogWritePin(AnalogPin.P3, value); break;
+            case lnwAnalogPin.P4: pins.analogWritePin(AnalogPin.P4, value); break;
+            case lnwAnalogPin.P5: pins.analogWritePin(AnalogPin.P5, value); break;
+            case lnwAnalogPin.P6: pins.analogWritePin(AnalogPin.P6, value); break;
+            case lnwAnalogPin.P7: pins.analogWritePin(AnalogPin.P7, value); break;
+            case lnwAnalogPin.P8: pins.analogWritePin(AnalogPin.P8, value); break;
 
         }
     }
 
 }
-namespace cpe_pnu {
+namespace lnw {
     //% block="OLED" weight=90 color=#FFA500 icon="\uf26c"
     export namespace oled {
         let addr = 0x3C
         let initialized = false
 
-        /**
-         * เริ่มต้นการทำงานของ OLED
-         */
         //% block="initialize OLED"
         //% group="OLED"
         export function init(): void {
@@ -391,9 +388,6 @@ namespace cpe_pnu {
             initialized = true
         }
 
-        /**
-         * แสดงข้อความแบบ static
-         */
         //% block="show string %text x %x y %y size %size"
         //% group="OLED"
         export function showString(text: string, x: number = 0, y: number = 0, size: number = 1): void {
@@ -401,66 +395,21 @@ namespace cpe_pnu {
             OLED12864_I2C.showString(x, y, text, size)
         }
 
-        /**
-         * Scroll ข้อความแนวนอน
-         */
-        //% block="scroll string horizontally %text speed %speed y %y size %size"
-        //% speed.min=10 speed.max=200
+        //% block="show number %num x %x y %y size %size"
         //% group="OLED"
-        export function scrollHorizontal(text: string, speed: number, y: number = 0, size: number = 1): void {
+        export function showNumber(num: number, x: number = 0, y: number = 0, size: number = 1): void {
             if (!initialized) init()
-            let textWidth = text.length * 6 * size
-            for (let offset = 0; offset <= textWidth; offset++) {
-                clear()
-                OLED12864_I2C.showString(-offset, y, text, size)
-                basic.pause(speed)
-            }
+            OLED12864_I2C.showString(x, y, num.toString(), size)
         }
 
-        /**
-         * Scroll ข้อความแนวตั้ง
-         */
-        //% block="scroll string vertically %text speed %speed x %x size %size"
-        //% speed.min=10 speed.max=200
-        //% group="OLED"
-        export function scrollVertical(text: string, speed: number, x: number = 0, size: number = 1): void {
-            if (!initialized) init()
-            let lineHeight = 8 * size
-            let totalHeight = text.length * lineHeight
-            for (let offset = 0; offset <= totalHeight; offset++) {
-                clear()
-                for (let i = 0; i < text.length; i++) {
-                    let y = i * lineHeight - offset
-                    if (y >= -lineHeight && y < 64) {
-                        OLED12864_I2C.showString(x, y, text.charAt(i), size)
-                    }
-                }
-                basic.pause(speed)
-            }
-        }
-
-        /**
-         * ล้างหน้าจอ
-         */
         //% block="clear screen"
         //% group="OLED"
         export function clear(): void {
-            pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE, true)
-            pins.i2cWriteNumber(addr, 0x20, NumberFormat.UInt8BE, true) // Set Memory Addressing Mode
-            pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE, true) // Horizontal mode
-            pins.i2cWriteNumber(addr, 0x21, NumberFormat.UInt8BE, true) // Column address
-            pins.i2cWriteNumber(addr, 0, NumberFormat.UInt8BE, true)    // Start = 0
-            pins.i2cWriteNumber(addr, 127, NumberFormat.UInt8BE, true)  // End = 127
-            pins.i2cWriteNumber(addr, 0x22, NumberFormat.UInt8BE, true) // Page address
-            pins.i2cWriteNumber(addr, 0, NumberFormat.UInt8BE, true)    // Start page = 0
-            pins.i2cWriteNumber(addr, 7, NumberFormat.UInt8BE, true)    // End page = 7
-            for (let i = 0; i < 1024; i++) {
-                pins.i2cWriteNumber(addr, 0x40, NumberFormat.UInt8BE, true)
-                pins.i2cWriteNumber(addr, 0x00, NumberFormat.UInt8BE, false)
-            }
+            OLED12864_I2C.clear()
         }
     }
-}// ปิด cpe_pnu
+}
+
 
 
 
